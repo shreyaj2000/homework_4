@@ -195,4 +195,6 @@ int main() {
     else
         cout<<"\nPath does not exist.";
 
+    return 0;
+
 }
