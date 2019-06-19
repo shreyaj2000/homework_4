@@ -189,8 +189,10 @@ int main() {
     g.printGraph();
 
     if(g.isReachable(23, 18)) {
-      cout<< "\nThere is a path from "<<name1<<" to "<<name2<<endl; 
-      //g.printAllPaths(23, 18);
+        cout<<"\nThere is a path from "<<name1<<" to "<<name2<<endl; 
+        //g.printAllPaths(23, 18);
     }
+    else
+        cout<<"\nPath does not exist.";
 
 }
