@@ -20,9 +20,10 @@ class Graph
     list<int> *adj;    // Pointer to an array containing adjacency lists 
 public: 
     Graph(int V);  // Constructor 
-    void addEdge(int v, int w); // function to add an edge to graph 
-    bool isReachable(int s, int d); 
-    void printGraph();
+    void addEdge(int v, int w); // adds an edge to graph 
+    bool isReachable(int s, int d); //checks if path exists
+    void printGraph(); //prints the list of vertexes and their edges
+
     void printAllPaths(int s, int d);
     void printAllPathsUtil(int , int , bool [], int [], int &); 
 }; 
@@ -101,7 +102,7 @@ bool Graph::isReachable(int s, int d)
     return false; 
 }
 
-// Prints all paths from 's' to 'd' 
+// Prints all paths from s to d 
 void Graph::printAllPaths(int s, int d) 
 { 
     // Mark all the vertices as not visited 
@@ -157,33 +158,33 @@ int main() {
     int src,dest,id;
     string name,name1,name2;
 
-	//create vector with the edges
-	fstream link_file(links);
+    //create vector with the edges
+    fstream link_file(links);
     fstream nickname_file(nicknames);
 
     if (link_file.fail()) {
       cout << "file not found:" << links << endl;
       return 1;
-  	}
+    }
 
     if (nickname_file.fail()) {
       cout << "file not found:" << nicknames << endl;
       return 1;
     }
 
-  	while (true) {
-  		link_file>>src>>dest;
+    while (true) {
+        link_file>>src>>dest;
         nickname_file>>id>>name;
         if (name=="jacob")
             name1 = name;
         if (name=="gilbert")
             name2 = name;
-  		if (link_file.eof())
-  			break;
+        if (link_file.eof())
+            break;
 
-	    g.addEdge(src,dest);
+        g.addEdge(src,dest);
 
-  	}
+    }
 
     g.printGraph();
 
