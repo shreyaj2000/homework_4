@@ -27,16 +27,8 @@ public:
 	void addEdge(int v, int w){ //adds edge to graph
 		adj[v].push_back(w); // Add w to v's list
 	}
-	void printGraph(); //prints the adjacency list
 	bool isReachable(int s,int d); //checks whether there is a path between the vertices
 };
-
-
-void Graph::printGraph() {
-	for (int v = 0; v< V; v++) {
-
-	}
-}
 
 bool Graph::isReachable(int src,int dest) {
 
