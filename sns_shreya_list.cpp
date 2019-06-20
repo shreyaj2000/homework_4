@@ -113,7 +113,6 @@ int main() {
 
     //count number of nodes
     while (true) {
-    	vertex_count++;
     	link_file>>src>>dest;
     	nickname_file>>id>>name;
 
