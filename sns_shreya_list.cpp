@@ -14,6 +14,8 @@ using namespace std;
 constexpr char nicknames[] = "nicknames.txt";
 constexpr char links[] = "links.txt";
 
+int step = 0;
+
 //Graph class
 class Graph {
 	int V; // No. of vertices
@@ -33,8 +35,10 @@ public:
 bool Graph::isReachable(int src,int dest) {
 
 	// Base case
-	if (src == dest)
+	if (src == dest) {
+        step++;
 		return true;
+    }
 
 
 	// Mark all vertices as not visited
@@ -50,6 +54,7 @@ bool Graph::isReachable(int src,int dest) {
 	visited[src] = true;
 	queue.push(src);
 	cout<<src<<" -> ";
+    step++;
 
 	//Generate all adjacent vertices of a vertex
 	list<int>::iterator i;
@@ -67,6 +72,7 @@ bool Graph::isReachable(int src,int dest) {
 			//If adjacent node is destination, return true
 			if (*i == dest) {
 				cout<<*i<<endl;
+                step++;
 				return true;
 			}
 
@@ -75,6 +81,7 @@ bool Graph::isReachable(int src,int dest) {
 				visited[*i] = true;
 				queue.push(*i);
 				cout<<*i<<" -> ";
+                step++;
 			}
 		}
 	}
@@ -113,7 +120,6 @@ int main() {
 
     //count number of nodes
     while (true) {
-    	link_file>>src>>dest;
     	nickname_file>>id>>name;
 
     	if (name == name_src) {
@@ -142,7 +148,7 @@ int main() {
     }
 
     if (g.isReachable(id_src,id_dest)) {
-    	cout<<"PATH OBTAINED"<<endl;
+    	cout<<"PATH OBTAINED IN "<<step<<" STEPS."<<endl;
     }
     else
     	cout<<"PATH NOT FOUND"<<endl;
