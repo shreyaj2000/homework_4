@@ -1,3 +1,5 @@
+//Vertex that takes the most number of steps from given source 
+
 #include <sys/time.h>
 #include <cstdio>
 #include <fstream>
@@ -11,13 +13,10 @@
 
 using namespace std;
 
-constexpr char nicknames[] = "nicknames.txt";
-constexpr char links[] = "links.txt";
+constexpr char pages[] = "pages.txt";
+constexpr char links[] = "link_wiki.txt";
 
-int step = 0;
-
-//list to find shortest path
-vector <int>shortest_path;
+int counter,max_counter;
 
 //Graph class
 class Graph {
@@ -32,19 +31,20 @@ public:
 	void addEdge(int v, int w){ //adds edge to graph
 		adj[v].push_back(w); // Add w to v's list
 	}
-	bool isReachable(int s,int d); //checks whether there is a path between the vertices
+	bool no_of_steps(int s,int d); //checks whether there is a path between the vertices
+	bool check_counter(); //checks if the counter is more than max counter
 };
 
-bool Graph::isReachable(int src,int dest) {
+bool Graph::no_of_steps(int src,int dest) {
 
-    //counts how many vertices to erase from shortest path 
-    int erase_counter;
+	counter = 0;
 
 	// Base case
 	if (src == dest) {
-        step++;
+		counter++;
 		return true;
-    }
+	}
+
 
 	// Mark all vertices as not visited
 	bool *visited = new bool[V];
@@ -58,16 +58,12 @@ bool Graph::isReachable(int src,int dest) {
 	//Mark the current node as visited and enqueue it
 	visited[src] = true;
 	queue.push(src);
-    shortest_path.push_back(src);
-	cout<<src<<" -> ";
-    step++;
+	counter++;
 
 	//Generate all adjacent vertices of a vertex
 	list<int>::iterator i;
 
 	while (!queue.empty()) {
-
-        erase_counter = 0;
 
 		//Dequeue a vertex from queue and print it
 		src = queue.front();
@@ -79,14 +75,6 @@ bool Graph::isReachable(int src,int dest) {
 
 			//If adjacent node is destination, return true
 			if (*i == dest) {
-				cout<<*i<<endl;
-                shortest_path.push_back(*i);
-                step++;
-                erase_counter++;
-
-                if (erase_counter>1)
-                    shortest_path.erase(shortest_path.end()-erase_counter,shortest_path.end()-1);
-
 				return true;
 			}
 
@@ -94,71 +82,68 @@ bool Graph::isReachable(int src,int dest) {
 			if (!visited[*i]) {
 				visited[*i] = true;
 				queue.push(*i);
-                shortest_path.push_back(*i);
-				cout<<*i<<" -> ";
-                step++;
+				counter++;
 			}
-            erase_counter++;
 		}
-
-        if (erase_counter>1)
-            shortest_path.erase(shortest_path.end()-erase_counter,shortest_path.end()-1);
 	}
 
 	return false;
 }
 
+bool Graph:: check_counter() {
+	if (counter>max_counter) {
+		max_counter = counter;
+		return true;
+	}
+	return false;
+}
+
 int main() {
 
-	int vertex_count,src,dest,id,id_src,id_dest;
-	string name,name_src,name_dest;
+	int vertex_counter,src,dest,id,id_src,id_dest;
+	string name,name_src;
 
-	vertex_count = 0;
+	int run_num = 0;
+
+	vertex_counter = 0;
 	id_src = id_dest = -1;
 
 	cout<<"Enter name of source : ";
 	cin>>name_src;
 
-	cout<<"Enter name of destination : ";
-	cin>>name_dest;
-
-	//accessing files
+	//opening files
 	fstream link_file(links);
-	fstream nickname_file(nicknames);
+	fstream page_file(pages);
 
     if (link_file.fail()) {
       cout << "file not found:" << links << endl;
       return 1;
     }
 
-    if (nickname_file.fail()) {
-      cout << "file not found:" << nicknames << endl;
+    if (page_file.fail()) {
+      cout << "file not found:" << pages << endl;
       return 1;
     }
 
 
-    //count number of nodes
+    //counter number of vertices
     while (true) {
-    	nickname_file>>id>>name;
+    	page_file>>id>>name;
 
     	if (name == name_src) {
     		id_src = id;
     	}
-    	else if (name == name_dest) {
-    		id_dest = id;
-    	}
-        vertex_count++;
-
-        if (nickname_file.eof())
+        if (page_file.eof())
             break;
 
+        vertex_counter++;
     }
 
-    if (id_src == -1 || id_dest == -1)
-    	cout<<"nickname not found";
+    if (id_src == -1)
+    	cout<<"page not found";
 
     //create graph
-    Graph g(vertex_count);
+    Graph g(vertex_counter);
     while (true) {
     	link_file>>src>>dest;
     	g.addEdge(src,dest);
@@ -167,17 +152,44 @@ int main() {
             break;
     }
 
-    if (g.isReachable(id_src,id_dest)) {
-    	cout<<"PATH OBTAINED IN "<<step<<" STEPS."<<endl;
+    page_file.clear();
+    page_file.seekg(0,ios::beg);
+
+    //Check each path from source to find the farthest
+    while (true) {
+    	page_file>>id>>name;
+
+	    if (g.no_of_steps(id_src,id)) {
+	    	if(g.check_counter())
+	    		id_dest = id;
+	    }
+
+    	if (page_file.eof())
+            break;
+        run_num++;
     }
-    else
-    	cout<<"PATH NOT FOUND"<<endl;
 
-    cout<<"SHORTEST PATH : ";
-    for (auto x = shortest_path.begin(); x != shortest_path.end(); ++x)
-        cout << *x << ' ';
+    //find the destination name of farthest vertex
 
-    cout<<endl;
+    string name_dest;
+
+    page_file.clear();
+    page_file.seekg(0,ios::beg);
+
+    while (true) {
+    	page_file>>id>>name;
+    	vertex_counter++;
+
+    	if (id_dest == id) {
+    		name_dest = name;
+    	}
+        if (page_file.eof())
+            break;
+
+    }
+
+    cout<<"Farthest point from "<<name_src<<" is "<<name_dest<<endl;
+    cout<<"Has a distance of "<<max_counter<<" edges"<<endl;
 
 	return 0;
 }
