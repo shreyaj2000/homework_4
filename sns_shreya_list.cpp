@@ -16,8 +16,8 @@ constexpr char links[] = "links.txt";
 
 int step = 0;
 
-//list to find shortest path
-vector <int>shortest_path;
+//list to find shortest path (only works for unidirectional graph/tree)
+//vector <int>shortest_path;
 
 //Graph class
 class Graph {
@@ -58,7 +58,7 @@ bool Graph::isReachable(int src,int dest) {
 	//Mark the current node as visited and enqueue it
 	visited[src] = true;
 	queue.push(src);
-    shortest_path.push_back(src);
+    //shortest_path.push_back(src);
 	cout<<src<<" -> ";
     step++;
 
@@ -80,13 +80,14 @@ bool Graph::isReachable(int src,int dest) {
 			//If adjacent node is destination, return true
 			if (*i == dest) {
 				cout<<*i<<endl;
-                shortest_path.push_back(*i);
+                //shortest_path.push_back(*i);
                 step++;
                 erase_counter++;
 
+                /*
                 if (erase_counter>1)
                     shortest_path.erase(shortest_path.end()-erase_counter,shortest_path.end()-1);
-
+                */
 				return true;
 			}
 
@@ -94,16 +95,17 @@ bool Graph::isReachable(int src,int dest) {
 			if (!visited[*i]) {
 				visited[*i] = true;
 				queue.push(*i);
-                shortest_path.push_back(*i);
+                //shortest_path.push_back(*i);
 				cout<<*i<<" -> ";
                 step++;
 			}
             erase_counter++;
 		}
-
+        /*
         if (erase_counter>1)
             shortest_path.erase(shortest_path.end()-erase_counter,shortest_path.end()-1);
-	}
+	    */
+    }
 
 	return false;
 }
@@ -172,10 +174,11 @@ int main() {
     }
     else
     	cout<<"PATH NOT FOUND"<<endl;
-
+    /*
     cout<<"SHORTEST PATH : ";
     for (auto x = shortest_path.begin(); x != shortest_path.end(); ++x)
         cout << *x << ' ';
+    */
 
     cout<<endl;
 
